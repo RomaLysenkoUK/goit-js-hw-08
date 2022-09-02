@@ -33,5 +33,6 @@ function saveMessage() {
   if (savedMessage) {
     textarea.value = savedMessage;
   }
+  const savedEmail = localStorage.getItem('');
 }
 saveMessage();
