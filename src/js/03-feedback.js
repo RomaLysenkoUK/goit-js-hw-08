@@ -30,6 +30,7 @@ function saveMessage() {
 saveMessage();
 
 function sendForm(event) {
+  console.log(formValue);
   event.preventDefault();
   event.target.reset();
   localStorage.removeItem(SAVED_KEY);
