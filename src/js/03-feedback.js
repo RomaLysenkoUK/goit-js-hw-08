@@ -4,35 +4,33 @@
 // Сделай так, чтобы хранилище обновлялось не чаще чем раз в 500 миллисекунд. Для этого добавь в проект и используй библиотеку
 
 import * as throttle from 'lodash.throttle';
-const input = document.querySelector('input');
+
 const form = document.querySelector('form');
-const textarea = document.querySelector('textarea');
+const SAVED_KEY = 'feedback-form-state';
+const formValue = {};
 
-form.addEventListener('submit', getForm);
+form.addEventListener('input', throttle(onGetData, 500));
+form.addEventListener('submit', sendForm);
 
-input.addEventListener('input', getEmail);
-
-textarea.addEventListener('input', getMessage);
-const grt = {};
-function sentForm(event) {
-  event.preventDefault();
-  event.currentTarget.reset();
-  localStorage.setItem('feedback-form-state');
-}
-
-function getEmail(event) {}
-
-function getMessage(event) {
-  const message = event.currentTarget.value;
-  localStorage.setItem('feedback-tx', message);
+function onGetData(event) {
+  formValue[event.target.name] = event.target.value;
+  const { email, message } = formValue;
+  localStorage.setItem(SAVED_KEY, JSON.stringify({ email, message }));
 }
 
 function saveMessage() {
-  const savedMessage = localStorage.getItem('feedback-tx');
-  console.log(savedMessage);
-  if (savedMessage) {
-    textarea.value = savedMessage;
+  const obj = JSON.parse(localStorage.getItem(SAVED_KEY));
+  const textarea = document.querySelector('textarea');
+  const input = document.querySelector('input');
+  if (localStorage.getItem(SAVED_KEY)) {
+    textarea.value = obj.message;
+    input.value = obj.email;
   }
-  const savedEmail = localStorage.getItem('');
 }
 saveMessage();
+
+function sendForm(event) {
+  event.preventDefault();
+  event.target.reset();
+  localStorage.removeItem(SAVED_KEY);
+}
